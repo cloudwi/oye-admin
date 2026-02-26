@@ -47,3 +47,16 @@ export interface ApiResponse<T> {
   data: T;
   message?: string;
 }
+
+export interface AppVersionConfigResponse {
+  id: number;
+  platform: string;
+  minVersion: string;
+  storeUrl: string;
+  updatedAt: string;
+}
+
+export interface AppVersionUpdateRequest {
+  minVersion: string;
+  storeUrl: string;
+}
