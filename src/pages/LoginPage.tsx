@@ -1,34 +1,72 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { adminLogin } from '../api/auth';
+import { adminLoginKakao } from '../api/auth';
 import { useAuth } from '../hooks/useAuth';
 
+declare global {
+  interface Window {
+    Kakao: {
+      init: (key: string) => void;
+      isInitialized: () => boolean;
+      Auth: {
+        login: (options: {
+          success: (response: { access_token: string }) => void;
+          fail: (error: unknown) => void;
+        }) => void;
+      };
+    };
+  }
+}
+
+const KAKAO_JS_KEY = import.meta.env.VITE_KAKAO_JS_KEY || '';
+
+function initKakao() {
+  if (window.Kakao && !window.Kakao.isInitialized() && KAKAO_JS_KEY) {
+    window.Kakao.init(KAKAO_JS_KEY);
+  }
+}
+
 export default function LoginPage() {
-  const [refreshToken, setRefreshToken] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!refreshToken.trim()) return;
+  const handleKakaoLogin = () => {
+    initKakao();
+
+    if (!window.Kakao?.isInitialized()) {
+      setError('카카오 SDK가 초기화되지 않았습니다. 관리자에게 문의하세요.');
+      return;
+    }
 
     setError('');
     setLoading(true);
-    try {
-      const data = await adminLogin(refreshToken.trim());
-      login(data.accessToken, data.refreshToken);
-      navigate('/', { replace: true });
-    } catch (err: unknown) {
-      const message =
-        (err as { response?: { status?: number } })?.response?.status === 403
-          ? '관리자 권한이 없습니다.'
-          : '로그인에 실패했습니다. 토큰을 확인해주세요.';
-      setError(message);
-    } finally {
-      setLoading(false);
-    }
+
+    window.Kakao.Auth.login({
+      success: async (response) => {
+        try {
+          const data = await adminLoginKakao(response.access_token);
+          login(data.accessToken, data.refreshToken);
+          navigate('/', { replace: true });
+        } catch (err: unknown) {
+          const status = (err as { response?: { status?: number } })?.response?.status;
+          if (status === 403) {
+            setError('관리자 권한이 없는 계정입니다.');
+          } else if (status === 401) {
+            setError('가입되지 않은 계정입니다. 먼저 앱에서 가입해주세요.');
+          } else {
+            setError('로그인에 실패했습니다.');
+          }
+        } finally {
+          setLoading(false);
+        }
+      },
+      fail: () => {
+        setError('카카오 로그인에 실패했습니다.');
+        setLoading(false);
+      },
+    });
   };
 
   return (
@@ -38,31 +76,29 @@ export default function LoginPage() {
           <h1 className="text-2xl font-bold text-indigo-600">OYE Admin</h1>
           <p className="text-gray-500 mt-2">관리자 로그인</p>
         </div>
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <div>
-            <label htmlFor="token" className="block text-sm font-medium text-gray-700 mb-1">
-              Refresh Token
-            </label>
-            <textarea
-              id="token"
-              value={refreshToken}
-              onChange={(e) => setRefreshToken(e.target.value)}
-              placeholder="모바일 앱에서 발급받은 refreshToken을 입력하세요"
-              rows={4}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
-            />
-          </div>
+        <div className="space-y-5">
           {error && (
             <p className="text-sm text-red-600 bg-red-50 px-4 py-2 rounded-lg">{error}</p>
           )}
           <button
-            type="submit"
-            disabled={loading || !refreshToken.trim()}
-            className="w-full py-3 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 disabled:opacity-50 transition-colors"
+            onClick={handleKakaoLogin}
+            disabled={loading}
+            className="w-full py-3 bg-[#FEE500] text-[#191919] rounded-lg font-medium hover:bg-[#FDD835] disabled:opacity-50 transition-colors flex items-center justify-center gap-2"
           >
-            {loading ? '로그인 중...' : '로그인'}
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <path
+                fillRule="evenodd"
+                clipRule="evenodd"
+                d="M9 0.6C4.029 0.6 0 3.713 0 7.55C0 9.944 1.558 12.06 3.931 13.295L2.933 16.844C2.845 17.152 3.213 17.396 3.48 17.214L7.673 14.43C8.108 14.478 8.55 14.5 9 14.5C13.971 14.5 18 11.387 18 7.55C18 3.713 13.971 0.6 9 0.6Z"
+                fill="#191919"
+              />
+            </svg>
+            {loading ? '로그인 중...' : '카카오로 로그인'}
           </button>
-        </form>
+          <p className="text-xs text-center text-gray-400">
+            ADMIN 권한이 있는 계정만 로그인할 수 있습니다
+          </p>
+        </div>
       </div>
     </div>
   );
