@@ -9,8 +9,8 @@ export async function adminLoginKakaoCode(code: string, redirectUri: string): Pr
   return data;
 }
 
-export function getKakaoLoginUrl(): string {
-  const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
+export async function getKakaoLoginUrl(): Promise<string> {
   const redirectUri = encodeURIComponent(`${window.location.origin}/login`);
-  return `${baseUrl}/api/auth/admin/kakao?redirect_uri=${redirectUri}`;
+  const { data } = await client.get<{ url: string }>(`/api/auth/admin/kakao?redirect_uri=${redirectUri}`);
+  return data.url;
 }

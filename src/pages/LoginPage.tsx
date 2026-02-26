@@ -36,8 +36,13 @@ export default function LoginPage() {
       .finally(() => setLoading(false));
   }, [searchParams, login, navigate]);
 
-  const handleKakaoLogin = () => {
-    window.location.href = getKakaoLoginUrl();
+  const handleKakaoLogin = async () => {
+    try {
+      const url = await getKakaoLoginUrl();
+      window.location.href = url;
+    } catch {
+      setError('카카오 로그인 URL을 가져올 수 없습니다.');
+    }
   };
 
   return (
