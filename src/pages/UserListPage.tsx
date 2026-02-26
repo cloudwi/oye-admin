@@ -69,7 +69,8 @@ export default function UserListPage() {
         )}
       </form>
 
-      <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+      {/* Desktop table */}
+      <div className="hidden md:block bg-white rounded-xl shadow-sm overflow-hidden">
         <table className="w-full">
           <thead>
             <tr className="bg-gray-50 border-b border-gray-200">
@@ -125,6 +126,45 @@ export default function UserListPage() {
             )}
           </tbody>
         </table>
+      </div>
+
+      {/* Mobile card list */}
+      <div className="md:hidden space-y-3">
+        {loading ? (
+          <div className="bg-white rounded-xl shadow-sm px-4 py-12 text-center text-gray-500">로딩 중...</div>
+        ) : !data || data.content.length === 0 ? (
+          <div className="bg-white rounded-xl shadow-sm px-4 py-12 text-center text-gray-500">유저가 없습니다.</div>
+        ) : (
+          data.content.map((user) => (
+            <div key={user.id} className="bg-white rounded-xl shadow-sm p-4">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm font-medium text-gray-900">{user.name}</span>
+                <span className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                  user.role === 'ADMIN'
+                    ? 'bg-purple-100 text-purple-800'
+                    : 'bg-gray-100 text-gray-800'
+                }`}>
+                  {user.role}
+                </span>
+              </div>
+              <div className="flex items-center gap-3 text-xs text-gray-500 mb-3">
+                <span>#{user.id}</span>
+                <span>{user.birthDate}</span>
+                <span>{new Date(user.createdAt).toLocaleDateString('ko-KR')}</span>
+              </div>
+              <button
+                onClick={() => handleToggleRole(user)}
+                className={`text-xs px-3 py-1.5 rounded font-medium transition-colors w-full ${
+                  user.role === 'ADMIN'
+                    ? 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                    : 'bg-indigo-100 text-indigo-700 hover:bg-indigo-200'
+                }`}
+              >
+                {user.role === 'ADMIN' ? 'USER로 변경' : 'ADMIN으로 변경'}
+              </button>
+            </div>
+          ))
+        )}
       </div>
       {data && (
         <Pagination page={data.page} totalPages={data.totalPages} onPageChange={setPage} />

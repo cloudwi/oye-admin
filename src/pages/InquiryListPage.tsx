@@ -22,7 +22,9 @@ export default function InquiryListPage() {
   return (
     <div>
       <h2 className="text-2xl font-bold text-gray-900 mb-6">문의 관리</h2>
-      <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+
+      {/* Desktop table */}
+      <div className="hidden md:block bg-white rounded-xl shadow-sm overflow-hidden">
         <table className="w-full">
           <thead>
             <tr className="bg-gray-50 border-b border-gray-200">
@@ -60,6 +62,33 @@ export default function InquiryListPage() {
           </tbody>
         </table>
       </div>
+
+      {/* Mobile card list */}
+      <div className="md:hidden space-y-3">
+        {loading ? (
+          <div className="bg-white rounded-xl shadow-sm px-4 py-12 text-center text-gray-500">로딩 중...</div>
+        ) : !data || data.content.length === 0 ? (
+          <div className="bg-white rounded-xl shadow-sm px-4 py-12 text-center text-gray-500">문의가 없습니다.</div>
+        ) : (
+          data.content.map((inquiry) => (
+            <div
+              key={inquiry.id}
+              onClick={() => navigate(`/inquiries/${inquiry.id}`)}
+              className="bg-white rounded-xl shadow-sm p-4 active:bg-gray-50 cursor-pointer transition-colors"
+            >
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm font-medium text-gray-900 truncate flex-1 mr-2">{inquiry.title}</span>
+                <StatusBadge status={inquiry.status} />
+              </div>
+              <div className="flex items-center gap-3 text-xs text-gray-500">
+                <span>#{inquiry.id}</span>
+                <span>{new Date(inquiry.createdAt).toLocaleDateString('ko-KR')}</span>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+
       {data && (
         <Pagination page={data.page} totalPages={data.totalPages} onPageChange={setPage} />
       )}

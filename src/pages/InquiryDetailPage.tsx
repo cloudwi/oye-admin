@@ -53,9 +53,9 @@ export default function InquiryDetailPage() {
         &larr; 목록으로
       </button>
 
-      <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-bold text-gray-900">{inquiry.title}</h2>
+      <div className="bg-white rounded-xl shadow-sm p-4 md:p-6 mb-4 md:mb-6">
+        <div className="flex items-start justify-between gap-3 mb-4">
+          <h2 className="text-lg md:text-xl font-bold text-gray-900">{inquiry.title}</h2>
           <StatusBadge status={inquiry.status} />
         </div>
         <p className="text-sm text-gray-500 mb-4">
@@ -64,7 +64,7 @@ export default function InquiryDetailPage() {
         <p className="text-gray-700 whitespace-pre-wrap">{inquiry.content}</p>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
+      <div className="bg-white rounded-xl shadow-sm p-4 md:p-6 mb-4 md:mb-6">
         <h3 className="text-lg font-semibold text-gray-900 mb-4">
           답변 ({inquiry.comments.length})
         </h3>
@@ -87,7 +87,7 @@ export default function InquiryDetailPage() {
         )}
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm p-6">
+      <div className="bg-white rounded-xl shadow-sm p-4 md:p-6">
         <h3 className="text-lg font-semibold text-gray-900 mb-4">답변 작성</h3>
         <form onSubmit={handleSubmitComment} className="space-y-4">
           <textarea
