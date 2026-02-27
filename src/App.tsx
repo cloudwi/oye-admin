@@ -9,6 +9,7 @@ import InquiryListPage from './pages/InquiryListPage';
 import InquiryDetailPage from './pages/InquiryDetailPage';
 import UserListPage from './pages/UserListPage';
 import AppVersionPage from './pages/AppVersionPage';
+import PushNotificationPage from './pages/PushNotificationPage';
 
 export default function App() {
   const [accessToken, setAccessToken] = useState<string | null>(
@@ -45,6 +46,7 @@ export default function App() {
             <Route path="/inquiries/:id" element={<InquiryDetailPage />} />
             <Route path="/users" element={<UserListPage />} />
             <Route path="/app-versions" element={<AppVersionPage />} />
+            <Route path="/push" element={<PushNotificationPage />} />
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getAllInquiries } from '../api/inquiries';
+import ErrorBanner from '../components/ErrorBanner';
 import Pagination from '../components/Pagination';
 import StatusBadge from '../components/StatusBadge';
 import type { InquiryResponse, PageResponse } from '../types';
@@ -9,19 +10,22 @@ export default function InquiryListPage() {
   const [data, setData] = useState<PageResponse<InquiryResponse> | null>(null);
   const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
     setLoading(true);
+    setError('');
     getAllInquiries(page, 20)
       .then(setData)
-      .catch(console.error)
+      .catch(() => setError('문의 목록을 불러오는데 실패했습니다.'))
       .finally(() => setLoading(false));
   }, [page]);
 
   return (
     <div>
       <h2 className="text-2xl font-bold text-gray-900 mb-6">문의 관리</h2>
+      <ErrorBanner message={error} onDismiss={() => setError('')} />
 
       {/* Desktop table */}
       <div className="hidden md:block bg-white rounded-xl shadow-sm overflow-hidden">

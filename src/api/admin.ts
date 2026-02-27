@@ -1,5 +1,5 @@
 import client from './client';
-import type { AdminDashboardStats, AdminUserResponse, ApiResponse, AppVersionConfigResponse, AppVersionUpdateRequest, PageResponse } from '../types';
+import type { AdminDashboardStats, AdminUserResponse, ApiResponse, AppVersionConfigResponse, AppVersionUpdateRequest, PageResponse, PushNotification, SendPushRequest } from '../types';
 
 export async function getStats(): Promise<AdminDashboardStats> {
   const { data } = await client.get<AdminDashboardStats>('/api/admin/stats');
@@ -26,4 +26,13 @@ export async function getAppVersions(): Promise<AppVersionConfigResponse[]> {
 export async function updateAppVersion(platform: string, request: AppVersionUpdateRequest): Promise<AppVersionConfigResponse> {
   const { data } = await client.put<AppVersionConfigResponse>(`/api/admin/app-versions/${platform}`, request);
   return data;
+}
+
+export async function sendPushNotification(request: SendPushRequest): Promise<void> {
+  await client.post('/api/admin/push', request);
+}
+
+export async function getPushHistory(page: number, size: number): Promise<PageResponse<PushNotification>> {
+  const { data } = await client.get<ApiResponse<PageResponse<PushNotification>>>('/api/admin/push', { params: { page, size } });
+  return data.data;
 }

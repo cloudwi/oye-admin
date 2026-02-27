@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { getAppVersions, updateAppVersion } from '../api/admin';
+import ErrorBanner from '../components/ErrorBanner';
 import type { AppVersionConfigResponse } from '../types';
 
 const platformLabels: Record<string, string> = {
@@ -12,6 +13,25 @@ const platformIcons: Record<string, string> = {
   android: '🤖',
 };
 
+const VERSION_REGEX = /^\d+\.\d+\.\d+$/;
+
+function validateMinVersion(value: string): string | null {
+  if (!value.trim()) return '최소 버전을 입력해주세요.';
+  if (!VERSION_REGEX.test(value.trim())) return '버전 형식이 올바르지 않습니다. (예: 1.0.0)';
+  return null;
+}
+
+function validateStoreUrl(value: string): string | null {
+  if (!value.trim()) return '스토어 URL을 입력해주세요.';
+  try {
+    const url = new URL(value.trim());
+    if (!['http:', 'https:'].includes(url.protocol)) return '올바른 URL을 입력해주세요.';
+  } catch {
+    return '올바른 URL을 입력해주세요.';
+  }
+  return null;
+}
+
 export default function AppVersionPage() {
   const [configs, setConfigs] = useState<AppVersionConfigResponse[]>([]);
   const [loading, setLoading] = useState(true);
@@ -19,6 +39,8 @@ export default function AppVersionPage() {
   const [editMinVersion, setEditMinVersion] = useState('');
   const [editStoreUrl, setEditStoreUrl] = useState('');
   const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
+  const [fieldErrors, setFieldErrors] = useState<{ minVersion?: string; storeUrl?: string }>({});
 
   useEffect(() => {
     fetchConfigs();
@@ -26,10 +48,11 @@ export default function AppVersionPage() {
 
   async function fetchConfigs() {
     try {
+      setError('');
       const data = await getAppVersions();
       setConfigs(data);
-    } catch (err) {
-      console.error('Failed to fetch app versions:', err);
+    } catch {
+      setError('앱 버전 정보를 불러오는데 실패했습니다.');
     } finally {
       setLoading(false);
     }
@@ -39,28 +62,39 @@ export default function AppVersionPage() {
     setEditingPlatform(config.platform);
     setEditMinVersion(config.minVersion);
     setEditStoreUrl(config.storeUrl);
+    setFieldErrors({});
+    setError('');
   }
 
   function cancelEdit() {
     setEditingPlatform(null);
     setEditMinVersion('');
     setEditStoreUrl('');
+    setFieldErrors({});
+  }
+
+  function validateForm(): boolean {
+    const minVersionErr = validateMinVersion(editMinVersion);
+    const storeUrlErr = validateStoreUrl(editStoreUrl);
+    setFieldErrors({ minVersion: minVersionErr ?? undefined, storeUrl: storeUrlErr ?? undefined });
+    return !minVersionErr && !storeUrlErr;
   }
 
   async function saveEdit(platform: string) {
+    if (!validateForm()) return;
     setSaving(true);
+    setError('');
     try {
       const updated = await updateAppVersion(platform, {
-        minVersion: editMinVersion,
-        storeUrl: editStoreUrl,
+        minVersion: editMinVersion.trim(),
+        storeUrl: editStoreUrl.trim(),
       });
       setConfigs((prev) =>
         prev.map((c) => (c.platform === platform ? updated : c))
       );
       setEditingPlatform(null);
-    } catch (err) {
-      console.error('Failed to update app version:', err);
-      alert('저장에 실패했습니다.');
+    } catch {
+      setError('저장에 실패했습니다.');
     } finally {
       setSaving(false);
     }
@@ -77,6 +111,7 @@ export default function AppVersionPage() {
   return (
     <div>
       <h2 className="text-2xl font-bold text-gray-800 mb-6">앱 버전 관리</h2>
+      <ErrorBanner message={error} onDismiss={() => setError('')} />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {configs.map((config) => {
           const isEditing = editingPlatform === config.platform;
@@ -114,10 +149,20 @@ export default function AppVersionPage() {
                     <input
                       type="text"
                       value={editMinVersion}
-                      onChange={(e) => setEditMinVersion(e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
+                      onChange={(e) => {
+                        setEditMinVersion(e.target.value);
+                        if (fieldErrors.minVersion) {
+                          setFieldErrors((prev) => ({ ...prev, minVersion: undefined }));
+                        }
+                      }}
+                      className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm ${
+                        fieldErrors.minVersion ? 'border-red-400' : 'border-gray-300'
+                      }`}
                       placeholder="1.0.0"
                     />
+                    {fieldErrors.minVersion && (
+                      <p className="mt-1 text-xs text-red-600">{fieldErrors.minVersion}</p>
+                    )}
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-600 mb-1">
@@ -126,10 +171,20 @@ export default function AppVersionPage() {
                     <input
                       type="text"
                       value={editStoreUrl}
-                      onChange={(e) => setEditStoreUrl(e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
+                      onChange={(e) => {
+                        setEditStoreUrl(e.target.value);
+                        if (fieldErrors.storeUrl) {
+                          setFieldErrors((prev) => ({ ...prev, storeUrl: undefined }));
+                        }
+                      }}
+                      className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm ${
+                        fieldErrors.storeUrl ? 'border-red-400' : 'border-gray-300'
+                      }`}
                       placeholder="https://..."
                     />
+                    {fieldErrors.storeUrl && (
+                      <p className="mt-1 text-xs text-red-600">{fieldErrors.storeUrl}</p>
+                    )}
                   </div>
                   <div className="flex gap-2 pt-2">
                     <button

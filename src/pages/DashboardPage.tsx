@@ -1,15 +1,17 @@
 import { useEffect, useState } from 'react';
 import { getStats } from '../api/admin';
+import ErrorBanner from '../components/ErrorBanner';
 import type { AdminDashboardStats } from '../types';
 
 export default function DashboardPage() {
   const [stats, setStats] = useState<AdminDashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     getStats()
       .then(setStats)
-      .catch(console.error)
+      .catch(() => setError('통계를 불러오는데 실패했습니다.'))
       .finally(() => setLoading(false));
   }, []);
 
@@ -17,8 +19,13 @@ export default function DashboardPage() {
     return <div className="flex items-center justify-center h-64 text-gray-500">로딩 중...</div>;
   }
 
-  if (!stats) {
-    return <div className="text-red-500">통계를 불러올 수 없습니다.</div>;
+  if (error || !stats) {
+    return (
+      <div>
+        <h2 className="text-2xl font-bold text-gray-900 mb-6">대시보드</h2>
+        <ErrorBanner message={error || '통계를 불러올 수 없습니다.'} />
+      </div>
+    );
   }
 
   const cards = [

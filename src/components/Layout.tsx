@@ -6,6 +6,7 @@ const navItems = [
   { to: '/', label: '대시보드', icon: '📊' },
   { to: '/inquiries', label: '문의 관리', icon: '💬' },
   { to: '/users', label: '유저 관리', icon: '👥' },
+  { to: '/push', label: '푸시 알림', icon: '🔔' },
   { to: '/app-versions', label: '앱 버전 관리', icon: '📱' },
 ];
 

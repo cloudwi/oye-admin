@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getInquiry, addComment } from '../api/inquiries';
+import ErrorBanner from '../components/ErrorBanner';
 import StatusBadge from '../components/StatusBadge';
 import type { InquiryResponse } from '../types';
 
@@ -11,13 +12,15 @@ export default function InquiryDetailPage() {
   const [loading, setLoading] = useState(true);
   const [comment, setComment] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     if (!id) return;
     setLoading(true);
+    setError('');
     getInquiry(Number(id))
       .then(setInquiry)
-      .catch(console.error)
+      .catch(() => setError('문의를 불러오는데 실패했습니다.'))
       .finally(() => setLoading(false));
   }, [id]);
 
@@ -25,12 +28,13 @@ export default function InquiryDetailPage() {
     e.preventDefault();
     if (!comment.trim() || !id) return;
     setSubmitting(true);
+    setError('');
     try {
       const updated = await addComment(Number(id), comment.trim());
       setInquiry(updated);
       setComment('');
-    } catch (err) {
-      console.error(err);
+    } catch {
+      setError('답변 등록에 실패했습니다.');
     } finally {
       setSubmitting(false);
     }
@@ -41,7 +45,17 @@ export default function InquiryDetailPage() {
   }
 
   if (!inquiry) {
-    return <div className="text-red-500">문의를 찾을 수 없습니다.</div>;
+    return (
+      <div className="max-w-3xl">
+        <button
+          onClick={() => navigate('/inquiries')}
+          className="text-sm text-gray-500 hover:text-gray-700 mb-4 flex items-center gap-1"
+        >
+          &larr; 목록으로
+        </button>
+        <ErrorBanner message={error || '문의를 찾을 수 없습니다.'} />
+      </div>
+    );
   }
 
   return (
@@ -52,6 +66,8 @@ export default function InquiryDetailPage() {
       >
         &larr; 목록으로
       </button>
+
+      <ErrorBanner message={error} onDismiss={() => setError('')} />
 
       <div className="bg-white rounded-xl shadow-sm p-4 md:p-6 mb-4 md:mb-6">
         <div className="flex items-start justify-between gap-3 mb-4">

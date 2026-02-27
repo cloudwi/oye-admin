@@ -60,3 +60,22 @@ export interface AppVersionUpdateRequest {
   minVersion: string;
   storeUrl: string;
 }
+
+export interface PushNotification {
+  id: number;
+  title: string;
+  body: string;
+  targetType: 'ALL' | 'SPECIFIC';
+  targetUserIds: string | null;
+  sentCount: number;
+  failCount: number;
+  sentBy: number;
+  createdAt: string;
+}
+
+export interface SendPushRequest {
+  title: string;
+  body: string;
+  targetType: 'ALL' | 'SPECIFIC';
+  targetUserIds?: number[];
+}

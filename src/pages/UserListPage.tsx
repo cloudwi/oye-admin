@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { getUsers, updateUserRole } from '../api/admin';
+import ErrorBanner from '../components/ErrorBanner';
 import Pagination from '../components/Pagination';
 import type { AdminUserResponse, PageResponse } from '../types';
 
@@ -9,12 +10,14 @@ export default function UserListPage() {
   const [search, setSearch] = useState('');
   const [searchInput, setSearchInput] = useState('');
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   const fetchUsers = useCallback(() => {
     setLoading(true);
+    setError('');
     getUsers(page, 20, search || undefined)
       .then(setData)
-      .catch(console.error)
+      .catch(() => setError('유저 목록을 불러오는데 실패했습니다.'))
       .finally(() => setLoading(false));
   }, [page, search]);
 
@@ -31,18 +34,19 @@ export default function UserListPage() {
   const handleToggleRole = async (user: AdminUserResponse) => {
     const newRole = user.role === 'ADMIN' ? 'USER' : 'ADMIN';
     if (!confirm(`${user.name}님의 권한을 ${newRole}로 변경하시겠습니까?`)) return;
+    setError('');
     try {
       await updateUserRole(user.id, newRole);
       fetchUsers();
-    } catch (err) {
-      console.error(err);
-      alert('권한 변경에 실패했습니다.');
+    } catch {
+      setError('권한 변경에 실패했습니다.');
     }
   };
 
   return (
     <div>
       <h2 className="text-2xl font-bold text-gray-900 mb-6">유저 관리</h2>
+      <ErrorBanner message={error} onDismiss={() => setError('')} />
 
       <form onSubmit={handleSearch} className="mb-4 flex gap-2">
         <input
