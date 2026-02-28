@@ -23,7 +23,7 @@ client.interceptors.response.use(
       if (refreshToken) {
         try {
           const { data } = await axios.post(
-            `${client.defaults.baseURL}/api/auth/refresh`,
+            `${client.defaults.baseURL}/api/v1/auth/refresh`,
             { refreshToken },
             { headers: { 'Content-Type': 'application/json' } },
           );
