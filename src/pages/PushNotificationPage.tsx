@@ -3,6 +3,7 @@ import { sendPushNotification, getPushHistory } from '../api/admin';
 import ErrorBanner from '../components/ErrorBanner';
 import Pagination from '../components/Pagination';
 import type { PushNotification, PageResponse, SendPushRequest } from '../types';
+import { formatDate } from '../utils/format';
 
 export default function PushNotificationPage() {
   // Form state
@@ -276,7 +277,7 @@ export default function PushNotificationPage() {
                 data.content.map((item) => (
                   <tr key={item.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
                     <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
-                      {new Date(item.createdAt).toLocaleString('ko-KR')}
+                      {formatDate(item.createdAt, true)}
                     </td>
                     <td className="px-6 py-4 text-sm font-medium text-gray-900">{item.title}</td>
                     <td className="px-6 py-4 text-sm text-gray-500 max-w-xs truncate">{item.body}</td>
@@ -323,7 +324,7 @@ export default function PushNotificationPage() {
                 </div>
                 <p className="text-sm text-gray-500 mb-2 line-clamp-2">{item.body}</p>
                 <div className="flex items-center gap-3 text-xs text-gray-500">
-                  <span>{new Date(item.createdAt).toLocaleString('ko-KR')}</span>
+                  <span>{formatDate(item.createdAt, true)}</span>
                   <span>발송 {item.sentCount}</span>
                   {item.failCount > 0 && (
                     <span className="text-red-600">실패 {item.failCount}</span>

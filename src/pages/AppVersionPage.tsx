@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { getAppVersions, updateAppVersion } from '../api/admin';
 import ErrorBanner from '../components/ErrorBanner';
 import type { AppVersionConfigResponse } from '../types';
+import { formatDate } from '../utils/format';
 
 const platformLabels: Record<string, string> = {
   ios: 'iOS',
@@ -220,7 +221,7 @@ export default function AppVersionPage() {
                   <div>
                     <span className="text-sm text-gray-500">최종 수정</span>
                     <p className="text-sm text-gray-700">
-                      {new Date(config.updatedAt).toLocaleString('ko-KR')}
+                      {formatDate(config.updatedAt, true)}
                     </p>
                   </div>
                 </div>

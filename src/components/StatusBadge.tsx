@@ -1,8 +1,10 @@
+import React from 'react';
+
 interface Props {
   status: 'PENDING' | 'ANSWERED';
 }
 
-export default function StatusBadge({ status }: Props) {
+function StatusBadge({ status }: Props) {
   const styles = status === 'PENDING'
     ? 'bg-yellow-100 text-yellow-800'
     : 'bg-green-100 text-green-800';
@@ -15,3 +17,5 @@ export default function StatusBadge({ status }: Props) {
     </span>
   );
 }
+
+export default React.memo(StatusBadge);

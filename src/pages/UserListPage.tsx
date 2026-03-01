@@ -3,6 +3,7 @@ import { getUsers, updateUserRole } from '../api/admin';
 import ErrorBanner from '../components/ErrorBanner';
 import Pagination from '../components/Pagination';
 import type { AdminUserResponse, PageResponse } from '../types';
+import { formatDate } from '../utils/format';
 
 export default function UserListPage() {
   const [data, setData] = useState<PageResponse<AdminUserResponse> | null>(null);
@@ -111,7 +112,7 @@ export default function UserListPage() {
                     </span>
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-500">
-                    {new Date(user.createdAt).toLocaleDateString('ko-KR')}
+                    {formatDate(user.createdAt)}
                   </td>
                   <td className="px-6 py-4">
                     <button
@@ -154,7 +155,7 @@ export default function UserListPage() {
               <div className="flex items-center gap-3 text-xs text-gray-500 mb-3">
                 <span>#{user.id}</span>
                 <span>{user.birthDate}</span>
-                <span>{new Date(user.createdAt).toLocaleDateString('ko-KR')}</span>
+                <span>{formatDate(user.createdAt)}</span>
               </div>
               <button
                 onClick={() => handleToggleRole(user)}

@@ -1,9 +1,11 @@
+import React from 'react';
+
 interface ErrorBannerProps {
   message: string;
   onDismiss?: () => void;
 }
 
-export default function ErrorBanner({ message, onDismiss }: ErrorBannerProps) {
+function ErrorBanner({ message, onDismiss }: ErrorBannerProps) {
   if (!message) return null;
 
   return (
@@ -21,3 +23,5 @@ export default function ErrorBanner({ message, onDismiss }: ErrorBannerProps) {
     </div>
   );
 }
+
+export default React.memo(ErrorBanner);

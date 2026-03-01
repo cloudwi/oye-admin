@@ -4,6 +4,7 @@ import { getInquiry, addComment } from '../api/inquiries';
 import ErrorBanner from '../components/ErrorBanner';
 import StatusBadge from '../components/StatusBadge';
 import type { InquiryResponse } from '../types';
+import { formatDate } from '../utils/format';
 
 export default function InquiryDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -75,7 +76,7 @@ export default function InquiryDetailPage() {
           <StatusBadge status={inquiry.status} />
         </div>
         <p className="text-sm text-gray-500 mb-4">
-          {new Date(inquiry.createdAt).toLocaleString('ko-KR')}
+          {formatDate(inquiry.createdAt, true)}
         </p>
         <p className="text-gray-700 whitespace-pre-wrap">{inquiry.content}</p>
       </div>
@@ -93,7 +94,7 @@ export default function InquiryDetailPage() {
                 <div className="flex items-center gap-2 mb-1">
                   <span className="text-sm font-medium text-indigo-600">{c.adminName}</span>
                   <span className="text-xs text-gray-400">
-                    {new Date(c.createdAt).toLocaleString('ko-KR')}
+                    {formatDate(c.createdAt, true)}
                   </span>
                 </div>
                 <p className="text-gray-700 text-sm whitespace-pre-wrap">{c.content}</p>

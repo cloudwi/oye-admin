@@ -5,6 +5,7 @@ import ErrorBanner from '../components/ErrorBanner';
 import Pagination from '../components/Pagination';
 import StatusBadge from '../components/StatusBadge';
 import type { InquiryResponse, PageResponse } from '../types';
+import { formatDate } from '../utils/format';
 
 export default function InquiryListPage() {
   const [data, setData] = useState<PageResponse<InquiryResponse> | null>(null);
@@ -58,7 +59,7 @@ export default function InquiryListPage() {
                   <td className="px-6 py-4 text-sm font-medium text-gray-900">{inquiry.title}</td>
                   <td className="px-6 py-4"><StatusBadge status={inquiry.status} /></td>
                   <td className="px-6 py-4 text-sm text-gray-500">
-                    {new Date(inquiry.createdAt).toLocaleDateString('ko-KR')}
+                    {formatDate(inquiry.createdAt)}
                   </td>
                 </tr>
               ))
@@ -86,7 +87,7 @@ export default function InquiryListPage() {
               </div>
               <div className="flex items-center gap-3 text-xs text-gray-500">
                 <span>#{inquiry.id}</span>
-                <span>{new Date(inquiry.createdAt).toLocaleDateString('ko-KR')}</span>
+                <span>{formatDate(inquiry.createdAt)}</span>
               </div>
             </div>
           ))
