@@ -74,16 +74,16 @@ export default function UserListPage() {
       </form>
 
       {/* Desktop table */}
-      <div className="hidden md:block bg-white rounded-xl shadow-sm overflow-hidden">
-        <table className="w-full">
+      <div className="hidden sm:block bg-white rounded-xl shadow-sm overflow-x-auto">
+        <table className="w-full min-w-[640px]">
           <thead>
             <tr className="bg-gray-50 border-b border-gray-200">
-              <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">ID</th>
-              <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">이름</th>
-              <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">생년월일</th>
-              <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">권한</th>
-              <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">가입일</th>
-              <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">관리</th>
+              <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase whitespace-nowrap">ID</th>
+              <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase whitespace-nowrap">이름</th>
+              <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase whitespace-nowrap">생년월일</th>
+              <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase whitespace-nowrap">권한</th>
+              <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase whitespace-nowrap">가입일</th>
+              <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase whitespace-nowrap">관리</th>
             </tr>
           </thead>
           <tbody>
@@ -133,7 +133,7 @@ export default function UserListPage() {
       </div>
 
       {/* Mobile card list */}
-      <div className="md:hidden space-y-3">
+      <div className="sm:hidden space-y-3">
         {loading ? (
           <div className="bg-white rounded-xl shadow-sm px-4 py-12 text-center text-gray-500">로딩 중...</div>
         ) : !data || data.content.length === 0 ? (

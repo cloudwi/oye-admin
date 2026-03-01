@@ -28,7 +28,7 @@ export default function InquiryListPage() {
       <ErrorBanner message={error} onDismiss={() => setError('')} />
 
       {/* Desktop table */}
-      <div className="hidden md:block bg-white rounded-xl shadow-sm overflow-hidden">
+      <div className="hidden sm:block bg-white rounded-xl shadow-sm overflow-x-auto">
         <table className="w-full">
           <thead>
             <tr className="bg-gray-50 border-b border-gray-200">
@@ -68,7 +68,7 @@ export default function InquiryListPage() {
       </div>
 
       {/* Mobile card list */}
-      <div className="md:hidden space-y-3">
+      <div className="sm:hidden space-y-3">
         {loading ? (
           <div className="bg-white rounded-xl shadow-sm px-4 py-12 text-center text-gray-500">로딩 중...</div>
         ) : !data || data.content.length === 0 ? (

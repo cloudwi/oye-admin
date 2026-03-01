@@ -251,16 +251,16 @@ export default function PushNotificationPage() {
         <ErrorBanner message={historyError} onDismiss={() => setHistoryError('')} />
 
         {/* Desktop table */}
-        <div className="hidden md:block bg-white rounded-xl shadow-sm overflow-hidden">
-          <table className="w-full">
+        <div className="hidden sm:block bg-white rounded-xl shadow-sm overflow-x-auto">
+          <table className="w-full min-w-[700px]">
             <thead>
               <tr className="bg-gray-50 border-b border-gray-200">
-                <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">발송일시</th>
-                <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">제목</th>
-                <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">내용</th>
-                <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">대상</th>
-                <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">발송수</th>
-                <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">실패수</th>
+                <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase whitespace-nowrap">발송일시</th>
+                <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase whitespace-nowrap">제목</th>
+                <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase whitespace-nowrap">내용</th>
+                <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase whitespace-nowrap">대상</th>
+                <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase whitespace-nowrap">발송수</th>
+                <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase whitespace-nowrap">실패수</th>
               </tr>
             </thead>
             <tbody>
@@ -303,7 +303,7 @@ export default function PushNotificationPage() {
         </div>
 
         {/* Mobile card list */}
-        <div className="md:hidden space-y-3">
+        <div className="sm:hidden space-y-3">
           {loading ? (
             <div className="bg-white rounded-xl shadow-sm px-4 py-12 text-center text-gray-500">로딩 중...</div>
           ) : !data || data.content.length === 0 ? (

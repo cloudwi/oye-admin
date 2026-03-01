@@ -112,7 +112,7 @@ export default function AppVersionPage() {
     <div>
       <h2 className="text-2xl font-bold text-gray-800 mb-6">앱 버전 관리</h2>
       <ErrorBanner message={error} onDismiss={() => setError('')} />
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         {configs.map((config) => {
           const isEditing = editingPlatform === config.platform;
 

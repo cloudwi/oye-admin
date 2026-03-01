@@ -37,7 +37,7 @@ export default function DashboardPage() {
   return (
     <div>
       <h2 className="text-2xl font-bold text-gray-900 mb-6">대시보드</h2>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
         {cards.map((card) => (
           <div key={card.label} className="bg-white rounded-xl shadow-sm p-6">
             <div className="flex items-center gap-4">
