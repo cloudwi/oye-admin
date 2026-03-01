@@ -36,3 +36,8 @@ export async function getPushHistory(page: number, size: number): Promise<PageRe
   const { data } = await client.get<ApiResponse<PageResponse<PushNotification>>>('/api/v1/admin/push', { params: { page, size } });
   return data.data;
 }
+
+export async function backfillFortuneScores(): Promise<{ updated: number }> {
+  const { data } = await client.post<ApiResponse<{ updated: number }>>('/api/v1/admin/fortune-scores/backfill');
+  return data.data;
+}
