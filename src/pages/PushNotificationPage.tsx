@@ -253,35 +253,35 @@ export default function PushNotificationPage() {
 
         {/* Desktop table */}
         <div className="hidden sm:block bg-white rounded-xl shadow-sm overflow-x-auto">
-          <table className="w-full min-w-[700px]">
+          <table className="w-full table-fixed min-w-[700px]">
             <thead>
               <tr className="bg-gray-50 border-b border-gray-200">
-                <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase whitespace-nowrap">발송일시</th>
-                <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase whitespace-nowrap">제목</th>
-                <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase whitespace-nowrap">내용</th>
-                <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase whitespace-nowrap">대상</th>
-                <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase whitespace-nowrap">발송수</th>
-                <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase whitespace-nowrap">실패수</th>
+                <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase whitespace-nowrap w-40">발송일시</th>
+                <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase whitespace-nowrap w-36">제목</th>
+                <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase whitespace-nowrap">내용</th>
+                <th className="text-center px-4 py-3 text-xs font-medium text-gray-500 uppercase whitespace-nowrap w-16">대상</th>
+                <th className="text-center px-4 py-3 text-xs font-medium text-gray-500 uppercase whitespace-nowrap w-16">발송</th>
+                <th className="text-center px-4 py-3 text-xs font-medium text-gray-500 uppercase whitespace-nowrap w-16">실패</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-12 text-center text-gray-500">로딩 중...</td>
+                  <td colSpan={6} className="px-4 py-12 text-center text-gray-500">로딩 중...</td>
                 </tr>
               ) : !data || data.content.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-12 text-center text-gray-500">발송 이력이 없습니다.</td>
+                  <td colSpan={6} className="px-4 py-12 text-center text-gray-500">발송 이력이 없습니다.</td>
                 </tr>
               ) : (
                 data.content.map((item) => (
                   <tr key={item.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
-                    <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
+                    <td className="px-4 py-4 text-sm text-gray-500 whitespace-nowrap">
                       {formatDate(item.createdAt, true)}
                     </td>
-                    <td className="px-6 py-4 text-sm font-medium text-gray-900">{item.title}</td>
-                    <td className="px-6 py-4 text-sm text-gray-500 max-w-xs truncate">{item.body}</td>
-                    <td className="px-6 py-4">
+                    <td className="px-4 py-4 text-sm font-medium text-gray-900 truncate">{item.title}</td>
+                    <td className="px-4 py-4 text-sm text-gray-500 truncate">{item.body}</td>
+                    <td className="px-4 py-4 text-center">
                       <span className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-medium ${
                         item.targetType === 'ALL'
                           ? 'bg-blue-100 text-blue-800'
@@ -290,8 +290,8 @@ export default function PushNotificationPage() {
                         {item.targetType === 'ALL' ? '전체' : '특정'}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-500">{item.sentCount}</td>
-                    <td className="px-6 py-4 text-sm">
+                    <td className="px-4 py-4 text-sm text-gray-500 text-center">{item.sentCount}</td>
+                    <td className="px-4 py-4 text-sm text-center">
                       <span className={item.failCount > 0 ? 'text-red-600 font-medium' : 'text-gray-500'}>
                         {item.failCount}
                       </span>
