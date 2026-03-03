@@ -75,9 +75,17 @@ export default function InquiryDetailPage() {
           <h2 className="text-lg md:text-xl font-bold text-gray-900">{inquiry.title}</h2>
           <StatusBadge status={inquiry.status} />
         </div>
-        <p className="text-sm text-gray-500 mb-4">
-          {formatDate(inquiry.createdAt, true)}
-        </p>
+        <div className="flex items-center gap-3 text-sm text-gray-500 mb-4">
+          <button
+            onClick={() => navigate(`/users/${inquiry.userId}/inquiries`)}
+            className="text-indigo-600 hover:text-indigo-800 hover:underline font-medium"
+          >
+            {inquiry.userName || '알 수 없음'}
+            <span className="text-gray-400 ml-1">#{inquiry.userId}</span>
+          </button>
+          <span>·</span>
+          <span>{formatDate(inquiry.createdAt, true)}</span>
+        </div>
         <p className="text-gray-700 whitespace-pre-wrap">{inquiry.content}</p>
       </div>
 

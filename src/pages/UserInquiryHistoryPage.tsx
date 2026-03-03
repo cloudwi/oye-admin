@@ -1,31 +1,49 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { getAllInquiries } from '../api/inquiries';
+import { useParams, useNavigate } from 'react-router-dom';
+import { getUserInquiries } from '../api/inquiries';
 import ErrorBanner from '../components/ErrorBanner';
 import Pagination from '../components/Pagination';
 import StatusBadge from '../components/StatusBadge';
 import type { InquiryResponse, PageResponse } from '../types';
 import { formatDate } from '../utils/format';
 
-export default function InquiryListPage() {
+export default function UserInquiryHistoryPage() {
+  const { userId } = useParams<{ userId: string }>();
+  const navigate = useNavigate();
   const [data, setData] = useState<PageResponse<InquiryResponse> | null>(null);
   const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const navigate = useNavigate();
+
+  const userName = data?.content[0]?.userName;
 
   useEffect(() => {
+    if (!userId) return;
     setLoading(true);
     setError('');
-    getAllInquiries(page, 20)
+    getUserInquiries(Number(userId), page, 20)
       .then(setData)
       .catch(() => setError('문의 목록을 불러오는데 실패했습니다.'))
       .finally(() => setLoading(false));
-  }, [page]);
+  }, [userId, page]);
 
   return (
     <div>
-      <h2 className="text-2xl font-bold text-gray-900 mb-6">문의 관리</h2>
+      <button
+        onClick={() => navigate('/inquiries')}
+        className="text-sm text-gray-500 hover:text-gray-700 mb-4 flex items-center gap-1"
+      >
+        &larr; 문의 목록으로
+      </button>
+
+      <h2 className="text-2xl font-bold text-gray-900 mb-1">
+        {userName || `사용자 #${userId}`}의 문의 내역
+      </h2>
+      <p className="text-sm text-gray-500 mb-6">
+        사용자 ID: {userId}
+        {data && ` · 총 ${data.totalElements}건`}
+      </p>
+
       <ErrorBanner message={error} onDismiss={() => setError('')} />
 
       {/* Desktop table */}
@@ -34,7 +52,6 @@ export default function InquiryListPage() {
           <thead>
             <tr className="bg-gray-50 border-b border-gray-200">
               <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">ID</th>
-              <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">작성자</th>
               <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">제목</th>
               <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">상태</th>
               <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">작성일</th>
@@ -43,11 +60,11 @@ export default function InquiryListPage() {
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan={5} className="px-6 py-12 text-center text-gray-500">로딩 중...</td>
+                <td colSpan={4} className="px-6 py-12 text-center text-gray-500">로딩 중...</td>
               </tr>
             ) : !data || data.content.length === 0 ? (
               <tr>
-                <td colSpan={5} className="px-6 py-12 text-center text-gray-500">문의가 없습니다.</td>
+                <td colSpan={4} className="px-6 py-12 text-center text-gray-500">문의가 없습니다.</td>
               </tr>
             ) : (
               data.content.map((inquiry) => (
@@ -57,18 +74,6 @@ export default function InquiryListPage() {
                   className="border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors"
                 >
                   <td className="px-6 py-4 text-sm text-gray-500">{inquiry.id}</td>
-                  <td className="px-6 py-4">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        navigate(`/users/${inquiry.userId}/inquiries`);
-                      }}
-                      className="text-sm text-indigo-600 hover:text-indigo-800 hover:underline"
-                    >
-                      {inquiry.userName || '알 수 없음'}
-                      <span className="text-gray-400 ml-1">#{inquiry.userId}</span>
-                    </button>
-                  </td>
                   <td className="px-6 py-4 text-sm font-medium text-gray-900">{inquiry.title}</td>
                   <td className="px-6 py-4"><StatusBadge status={inquiry.status} /></td>
                   <td className="px-6 py-4 text-sm text-gray-500">
@@ -100,15 +105,6 @@ export default function InquiryListPage() {
               </div>
               <div className="flex items-center gap-3 text-xs text-gray-500">
                 <span>#{inquiry.id}</span>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    navigate(`/users/${inquiry.userId}/inquiries`);
-                  }}
-                  className="text-indigo-600 hover:underline"
-                >
-                  {inquiry.userName || '알 수 없음'}#{inquiry.userId}
-                </button>
                 <span>{formatDate(inquiry.createdAt)}</span>
               </div>
             </div>

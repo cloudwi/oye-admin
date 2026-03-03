@@ -27,6 +27,8 @@ export interface InquiryCommentResponse {
 
 export interface InquiryResponse {
   id: number;
+  userId: number;
+  userName: string | null;
   title: string;
   content: string;
   status: 'PENDING' | 'ANSWERED';
@@ -78,4 +80,58 @@ export interface SendPushRequest {
   body: string;
   targetType: 'ALL' | 'SPECIFIC';
   targetUserIds?: number[];
+}
+
+export interface AdminUserDetailResponse {
+  id: number;
+  name: string | null;
+  birthDate: string;
+  gender: string | null;
+  provider: string | null;
+  role: 'USER' | 'ADMIN';
+  lastLoginAt: string | null;
+  fortuneScheduleHour: number;
+  createdAt: string;
+}
+
+export interface LoginHistoryResponse {
+  provider: string;
+  ipAddress: string | null;
+  userAgent: string | null;
+  createdAt: string;
+}
+
+export interface AdminFortuneResponse {
+  date: string;
+  score: number | null;
+  content: string;
+}
+
+export interface AdminCompatibilityResponse {
+  partnerName: string | null;
+  relationType: string;
+  date: string;
+  score: number;
+  content: string;
+}
+
+export interface AdminLottoResponse {
+  round: number;
+  setNumber: number;
+  numbers: number[];
+  rank: string | null;
+  prizeAmount: number | null;
+  evaluated: boolean;
+}
+
+export interface AdminConnectionResponse {
+  partnerName: string | null;
+  partnerId: number;
+  relationType: string;
+}
+
+export interface AdminGroupResponse {
+  name: string;
+  memberCount: number;
+  isOwner: boolean;
 }

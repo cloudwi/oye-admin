@@ -1,5 +1,21 @@
 import client from './client';
-import type { AdminDashboardStats, AdminUserResponse, ApiResponse, AppVersionConfigResponse, AppVersionUpdateRequest, PageResponse, PushNotification, SendPushRequest } from '../types';
+import type {
+  AdminCompatibilityResponse,
+  AdminConnectionResponse,
+  AdminDashboardStats,
+  AdminFortuneResponse,
+  AdminGroupResponse,
+  AdminLottoResponse,
+  AdminUserDetailResponse,
+  AdminUserResponse,
+  ApiResponse,
+  AppVersionConfigResponse,
+  AppVersionUpdateRequest,
+  LoginHistoryResponse,
+  PageResponse,
+  PushNotification,
+  SendPushRequest,
+} from '../types';
 
 export async function getStats(): Promise<AdminDashboardStats> {
   const { data } = await client.get<AdminDashboardStats>('/api/v1/admin/stats');
@@ -35,4 +51,39 @@ export async function sendPushNotification(request: SendPushRequest): Promise<vo
 export async function getPushHistory(page: number, size: number): Promise<PageResponse<PushNotification>> {
   const { data } = await client.get<ApiResponse<PageResponse<PushNotification>>>('/api/v1/admin/push', { params: { page, size } });
   return data.data;
+}
+
+export async function getUserDetail(userId: number): Promise<AdminUserDetailResponse> {
+  const { data } = await client.get<AdminUserDetailResponse>(`/api/v1/admin/users/${userId}`);
+  return data;
+}
+
+export async function getUserLoginHistory(userId: number, page: number, size: number): Promise<PageResponse<LoginHistoryResponse>> {
+  const { data } = await client.get<ApiResponse<PageResponse<LoginHistoryResponse>>>(`/api/v1/admin/users/${userId}/login-history`, { params: { page, size } });
+  return data.data;
+}
+
+export async function getUserFortunes(userId: number, page: number, size: number): Promise<PageResponse<AdminFortuneResponse>> {
+  const { data } = await client.get<ApiResponse<PageResponse<AdminFortuneResponse>>>(`/api/v1/admin/users/${userId}/fortunes`, { params: { page, size } });
+  return data.data;
+}
+
+export async function getUserCompatibilities(userId: number, page: number, size: number): Promise<PageResponse<AdminCompatibilityResponse>> {
+  const { data } = await client.get<ApiResponse<PageResponse<AdminCompatibilityResponse>>>(`/api/v1/admin/users/${userId}/compatibilities`, { params: { page, size } });
+  return data.data;
+}
+
+export async function getUserLotto(userId: number, page: number, size: number): Promise<PageResponse<AdminLottoResponse>> {
+  const { data } = await client.get<ApiResponse<PageResponse<AdminLottoResponse>>>(`/api/v1/admin/users/${userId}/lotto`, { params: { page, size } });
+  return data.data;
+}
+
+export async function getUserConnections(userId: number): Promise<AdminConnectionResponse[]> {
+  const { data } = await client.get<AdminConnectionResponse[]>(`/api/v1/admin/users/${userId}/connections`);
+  return data;
+}
+
+export async function getUserGroups(userId: number): Promise<AdminGroupResponse[]> {
+  const { data } = await client.get<AdminGroupResponse[]>(`/api/v1/admin/users/${userId}/groups`);
+  return data;
 }

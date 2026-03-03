@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
+import { Link } from 'react-router-dom';
 import { getUsers, updateUserRole } from '../api/admin';
 import ErrorBanner from '../components/ErrorBanner';
 import Pagination from '../components/Pagination';
@@ -100,7 +101,11 @@ export default function UserListPage() {
               data.content.map((user) => (
                 <tr key={user.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
                   <td className="px-6 py-4 text-sm text-gray-500">{user.id}</td>
-                  <td className="px-6 py-4 text-sm font-medium text-gray-900">{user.name}</td>
+                  <td className="px-6 py-4 text-sm font-medium">
+                    <Link to={`/users/${user.id}`} className="text-indigo-600 hover:text-indigo-800 hover:underline">
+                      {user.name}
+                    </Link>
+                  </td>
                   <td className="px-6 py-4 text-sm text-gray-500">{user.birthDate}</td>
                   <td className="px-6 py-4">
                     <span className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-medium ${
@@ -143,7 +148,9 @@ export default function UserListPage() {
           data.content.map((user) => (
             <div key={user.id} className="bg-white rounded-xl shadow-sm p-4">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium text-gray-900">{user.name}</span>
+                <Link to={`/users/${user.id}`} className="text-sm font-medium text-indigo-600 hover:text-indigo-800 hover:underline">
+                  {user.name}
+                </Link>
                 <span className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-medium ${
                   user.role === 'ADMIN'
                     ? 'bg-purple-100 text-purple-800'

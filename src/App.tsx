@@ -11,6 +11,8 @@ const InquiryDetailPage = React.lazy(() => import('./pages/InquiryDetailPage'));
 const UserListPage = React.lazy(() => import('./pages/UserListPage'));
 const AppVersionPage = React.lazy(() => import('./pages/AppVersionPage'));
 const PushNotificationPage = React.lazy(() => import('./pages/PushNotificationPage'));
+const UserDetailPage = React.lazy(() => import('./pages/UserDetailPage'));
+const UserInquiryHistoryPage = React.lazy(() => import('./pages/UserInquiryHistoryPage'));
 
 export default function App() {
   const [accessToken, setAccessToken] = useState<string | null>(
@@ -47,6 +49,8 @@ export default function App() {
               <Route path="/inquiries" element={<InquiryListPage />} />
               <Route path="/inquiries/:id" element={<InquiryDetailPage />} />
               <Route path="/users" element={<UserListPage />} />
+              <Route path="/users/:id" element={<UserDetailPage />} />
+              <Route path="/users/:userId/inquiries" element={<UserInquiryHistoryPage />} />
               <Route path="/app-versions" element={<AppVersionPage />} />
               <Route path="/push" element={<PushNotificationPage />} />
             </Route>

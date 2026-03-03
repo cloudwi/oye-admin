@@ -17,3 +17,10 @@ export async function addComment(inquiryId: number, content: string): Promise<In
   const { data } = await client.post<InquiryResponse>(`/api/v1/inquiries/${inquiryId}/comments`, { content });
   return data;
 }
+
+export async function getUserInquiries(userId: number, page: number, size: number): Promise<PageResponse<InquiryResponse>> {
+  const { data } = await client.get<ApiResponse<PageResponse<InquiryResponse>>>(`/api/v1/inquiries/user/${userId}`, {
+    params: { page, size },
+  });
+  return data.data;
+}
