@@ -87,3 +87,7 @@ export async function getUserGroups(userId: number): Promise<AdminGroupResponse[
   const { data } = await client.get<AdminGroupResponse[]>(`/api/v1/admin/users/${userId}/groups`);
   return data;
 }
+
+export async function generateDaily(): Promise<void> {
+  await client.post('/api/v1/admin/generate-daily');
+}

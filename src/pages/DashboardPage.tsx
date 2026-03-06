@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getStats } from '../api/admin';
+import { getStats, generateDaily } from '../api/admin';
 import ErrorBanner from '../components/ErrorBanner';
 import type { AdminDashboardStats } from '../types';
 
@@ -7,6 +7,8 @@ export default function DashboardPage() {
   const [stats, setStats] = useState<AdminDashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [generating, setGenerating] = useState(false);
+  const [generateResult, setGenerateResult] = useState<'success' | 'error' | null>(null);
 
   useEffect(() => {
     getStats()
@@ -27,6 +29,20 @@ export default function DashboardPage() {
       </div>
     );
   }
+
+  const handleGenerateDaily = async () => {
+    if (!confirm('일일 데이터를 생성하시겠습니까?')) return;
+    setGenerating(true);
+    setGenerateResult(null);
+    try {
+      await generateDaily();
+      setGenerateResult('success');
+    } catch {
+      setGenerateResult('error');
+    } finally {
+      setGenerating(false);
+    }
+  };
 
   const cards = [
     { label: '전체 유저', value: stats.totalUsers, color: 'bg-blue-500' },
@@ -53,6 +69,29 @@ export default function DashboardPage() {
             </div>
           </div>
         ))}
+      </div>
+
+      {/* 일일 데이터 생성 */}
+      <div className="mt-8 bg-white rounded-xl shadow-sm p-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900">일일 데이터 생성</h3>
+            <p className="text-sm text-gray-500 mt-1">오늘의 운세 등 일일 데이터를 수동으로 생성합니다.</p>
+          </div>
+          <button
+            onClick={handleGenerateDaily}
+            disabled={generating}
+            className="px-5 py-2.5 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            {generating ? '생성 중...' : '생성하기'}
+          </button>
+        </div>
+        {generateResult === 'success' && (
+          <p className="mt-3 text-sm text-emerald-600 font-medium">일일 데이터가 성공적으로 생성되었습니다.</p>
+        )}
+        {generateResult === 'error' && (
+          <p className="mt-3 text-sm text-red-600 font-medium">일일 데이터 생성에 실패했습니다.</p>
+        )}
       </div>
     </div>
   );
