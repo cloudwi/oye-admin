@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getStats, generateDaily } from '../api/admin';
+import { getStats, generateDaily, evaluateLotto } from '../api/admin';
 import ErrorBanner from '../components/ErrorBanner';
 import type { AdminDashboardStats } from '../types';
 
@@ -9,6 +9,8 @@ export default function DashboardPage() {
   const [error, setError] = useState('');
   const [generating, setGenerating] = useState(false);
   const [generateResult, setGenerateResult] = useState<'success' | 'error' | null>(null);
+  const [evaluating, setEvaluating] = useState(false);
+  const [evaluateResult, setEvaluateResult] = useState<'success' | 'error' | null>(null);
 
   useEffect(() => {
     getStats()
@@ -91,6 +93,41 @@ export default function DashboardPage() {
         )}
         {generateResult === 'error' && (
           <p className="mt-3 text-sm text-red-600 font-medium">일일 데이터 생성에 실패했습니다.</p>
+        )}
+      </div>
+
+      {/* 로또 당첨 평가 */}
+      <div className="mt-4 bg-white rounded-xl shadow-sm p-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900">로또 당첨 평가</h3>
+            <p className="text-sm text-gray-500 mt-1">미평가된 회차의 추첨 결과를 조회하고 당첨 여부를 판정합니다.</p>
+          </div>
+          <button
+            onClick={async () => {
+              if (!confirm('미평가 회차의 로또 당첨 평가를 실행하시겠습니까?')) return;
+              setEvaluating(true);
+              setEvaluateResult(null);
+              try {
+                await evaluateLotto();
+                setEvaluateResult('success');
+              } catch {
+                setEvaluateResult('error');
+              } finally {
+                setEvaluating(false);
+              }
+            }}
+            disabled={evaluating}
+            className="px-5 py-2.5 bg-amber-600 text-white text-sm font-medium rounded-lg hover:bg-amber-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            {evaluating ? '평가 중...' : '평가하기'}
+          </button>
+        </div>
+        {evaluateResult === 'success' && (
+          <p className="mt-3 text-sm text-emerald-600 font-medium">로또 당첨 평가가 완료되었습니다.</p>
+        )}
+        {evaluateResult === 'error' && (
+          <p className="mt-3 text-sm text-red-600 font-medium">로또 당첨 평가에 실패했습니다.</p>
         )}
       </div>
     </div>

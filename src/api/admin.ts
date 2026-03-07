@@ -91,3 +91,7 @@ export async function getUserGroups(userId: number): Promise<AdminGroupResponse[
 export async function generateDaily(): Promise<void> {
   await client.post('/api/v1/admin/generate-daily');
 }
+
+export async function evaluateLotto(): Promise<void> {
+  await client.post('/api/v1/admin/evaluate-lotto');
+}
